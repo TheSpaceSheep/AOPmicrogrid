@@ -11,6 +11,8 @@ Run the `install.sh` file
 
 Run a ppo agent on the continual maze environment using 
 
-```source aopmgenv/bin/activate
-python test_ppo_maze.py```
+```
+source aopmgenv/bin/activate
+python test_ppo_maze.py
+```
 
