@@ -1,4 +1,4 @@
-python -m venv aopmgenv
+python3 -m venv aopmgenv
 source aopmgenv/bin/activate
 
 pip install -r requirements.txt
