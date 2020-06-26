@@ -1,2 +1,3 @@
-# ignore temporary vim files that end with ~
+# ignore temporary vim files that end with ~ and swap files
 *~
+*.swp
