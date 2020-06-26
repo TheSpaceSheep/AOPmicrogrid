@@ -21,4 +21,4 @@ for i in range(10000):
     obs, reward, dones, info = env.step(action)
     time.sleep(0.1)
 
-env.render()
+env.render("plots/")
