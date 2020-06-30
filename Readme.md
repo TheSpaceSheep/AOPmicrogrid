@@ -16,3 +16,9 @@ source aopmgenv/bin/activate
 python test_ppo_maze.py
 ```
 
+Or a random agent on the microgrid using
+
+```
+python main.py
+```
+
