@@ -3,7 +3,10 @@ import copy
 import microgridRLsimulator
 
 import params.env_params as env_params
+import params.gen_params as gen_params
 from agents.random_agent import RandomAgent
+from agents.agent_ppo import PPOAgent
+from agents.dqn_agent import DQNAgent
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--env', '-e', type=str, default='microgrid',
@@ -12,14 +15,13 @@ parser.add_argument('--env', '-e', type=str, default='microgrid',
 args = parser.parse_args()
 
 params = copy.deepcopy(env_params.env_params)
+params.update(gen_params.gen_params)
 params['env']['env'] = args.env
 
-
-agent = RandomAgent(params)
+params['env']['case'] = 'elespino_discrete'
+agent = DQNAgent(params)
 env = agent.env
 env.reset()
 
-for i in range(100):
-    action = agent.get_action()
-    env.step(action)
-    print("Taking action", action)
+agent.run_lifetime()
+print("End of agent's life")

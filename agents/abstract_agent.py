@@ -1,6 +1,7 @@
 class AbstractAgent():
     def __init__(self, params):
         self.params = params
+        self.T = params['problem']['T']
 
         if self.params['env']['env'] == 'microgrid':
             import gym
@@ -30,6 +31,7 @@ class AbstractAgent():
 
     def run_timestep(self):
         action = self.get_action()
+        print("Taking action", action)
         self.step(action)
 
     def run_lifetime(self):
@@ -43,3 +45,7 @@ class AbstractAgent():
 
         self.env.close()
         return aborted
+
+    def store_results(self, path="../plots/", id=None):
+        self.env.render(path, id=id)
+
