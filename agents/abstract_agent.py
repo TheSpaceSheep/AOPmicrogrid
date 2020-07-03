@@ -7,8 +7,13 @@ class AbstractAgent():
             import gym
             import microgridRLsimulator
             self.env = gym.make("microgridRLsimulator-v0",
-                               start_date = self.params['env']['start_date'],
-                               end_date = self.params['env']['end_date'],
+                               start_date = self.params['env']['tr_st_date'],
+                               end_date = self.params['env']['tr_en_date'],
+                               case = self.params['env']['case'])
+
+            self.test_env = gym.make("microgridRLsimulator-v0",
+                               start_date = self.params['env']['te_st_date'],
+                               end_date = self.params['env']['te_en_date'],
                                case = self.params['env']['case'])
 
         self.nb_timesteps = 0
@@ -26,26 +31,21 @@ class AbstractAgent():
 
         return obs, rew, done, info
 
-    def get_action(self):
-        raise NotImplementedError
 
-    def run_timestep(self):
-        action = self.get_action()
-        print("Taking action", action)
-        self.step(action)
 
-    def run_lifetime(self):
-        aborted = False
-        try:
-            while self.nb_timesteps < self.T:
-                self.run_timestep()
-        except KeyboardInterrupt:
-            print('Terminating agent early')
-            aborted = True
+    def train(self):
+        self.model.learn(total_timesteps=self.params['problem']['nb_train_steps'])
 
-        self.env.close()
-        return aborted
+    def test(self):
+        obs = self.test_env.reset()
+        for i in range(self.params['problem']['nb_test_steps']):
+                action, _states = self.model.predict(obs)
+                obs, reward, dones, info = self.test_env.step(action)
 
-    def store_results(self, path="../plots/", id=None):
-        self.env.render(path, id=id)
+
+    def store_results(self, path="../plots/", id=None, render_tests=False):
+        if render_tests:
+            self.test_env.render(path+"test/", id=id)
+        else:
+            self.env.render(path+"train/", id=id)
 
