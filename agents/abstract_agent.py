@@ -14,13 +14,12 @@ class AbstractAgent():
                                end_date = self.params['env']['tr_en_date'],
                                case = self.params['env']['case'])
 
-            self.test_env = gym.make("microgridRLsimulator-v0",
-                               start_date = self.params['env']['te_st_date'],
-                               end_date = self.params['env']['te_en_date'],
-                               case = self.params['env']['case'])
-
             self.env = make_vec_env(lambda :self.env, n_envs=1)
-            self.test_env = make_vec_env(lambda :self.test_env, n_envs=1)
+
+        self.params['env']['obs_shape'] = self.env.observation_space.shape[0]
+        self.params['env']['act_shape'] = self.env.action_space.shape[0]
+        self.params['env']['min_act'] = self.env.action_space.low[0]
+        self.params['env']['max_act'] = self.env.action_space.high[0]
 
         self.nb_timesteps = 0
 
@@ -37,40 +36,23 @@ class AbstractAgent():
 
         return obs, rew, done, info
 
+    def run_lifetime(self):
+        aborted = False
+        try:
+            while self.time < self.T:
+                self.run_timestep()
+        except KeyboardInterrupt:
+            print('Terminating Agent')
+            aborted = True
+            self.env.close()
 
+        return aborted
 
-    def train(self):
-        self.model.learn(total_timesteps=self.params['problem']['nb_train_steps'])
+    def run_timestep(self):
+        action = self.get_action()
+        self.step(action)
 
-    def test(self):
-        obs = self.test_env.reset()
-        for i in range(self.params['problem']['nb_test_steps']):
-                action, _states = self.model.predict(obs)
-                obs, reward, dones, info = self.test_env.step(action)
-
-
-    def store_results(self, path=None, render_tr_te=2):
-        """
-        :param: render_tr_te set to 0 to render nothing
-                                    1 to render test only
-                                    2 to render train only
-                                    3 to render test and train
-        """
-        if path is None:
-            from datetime import datetime
-            now = datetime.now()
-            dt_string = now.strftime("%d-%m-%Y_%H-%M-%S")
-            path = f"results/{dt_string}_{self.name}/"
-
-        if render_tr_te == 1 or render_tr_te == 3:
-            self.test_env.render(path+"test/", id=self.name)
-            print(f'results plotted at {path+"test/"}')
-
-        if render_tr_te >= 2:
-            self.env.render(path+"train/", id=self.name)
-            print(f'results plotted at {path+"train/"}')
-
-        with open(path+"params.txt", 'w') as param_file:
-           param_file.write(json.dumps(self.params, indent=4))
-
+    def step(self, action):
+        obs, rew, done, info = self.env.step(action)
+        return obs, rew, done, info
 

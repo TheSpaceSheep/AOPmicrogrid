@@ -1,9 +1,9 @@
-from agents.abstract_agent import AbstractAgent
+from agents.stable_baseline_agent import StableBaselineAgent
 from stable_baselines.deepq.policies import MlpPolicy
 from stable_baselines.common.vec_env import DummyVecEnv
 from stable_baselines import DQN
 
-class DQNAgent(AbstractAgent):
+class DQNAgent(StableBaselineAgent):
     def __init__(self, params):
         super(DQNAgent, self).__init__(params)
         self.model = DQN(MlpPolicy,

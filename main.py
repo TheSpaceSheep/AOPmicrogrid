@@ -17,7 +17,7 @@ params = copy.deepcopy(params.params)
 params['env']['env'] = args.env
 
 params['env']['case'] = 'elespino_discrete'
-agent = PPOAgent(params)
+agent = DQNAgent(params)
 
 agent.train()
 # agent.test()

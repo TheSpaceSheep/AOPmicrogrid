@@ -1,9 +1,9 @@
-from agents.abstract_agent import AbstractAgent
+from agents.stable_baseline_agent import StableBaselineAgent
 from stable_baselines.common.policies import MlpPolicy, CnnPolicy, LstmPolicy, CnnLstmPolicy
 from stable_baselines.common.vec_env import DummyVecEnv
 from stable_baselines import PPO2
 
-class PPOAgent(AbstractAgent):
+class PPOAgent(StableBaselineAgent):
     def __init__(self, params):
         super(PPOAgent, self).__init__(params)
         if params['agent']['ppo']['policy'] == 'MlpPolicy':

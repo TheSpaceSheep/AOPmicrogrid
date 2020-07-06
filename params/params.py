@@ -40,5 +40,8 @@ params = {
             'prioritized_replay': True,
             'tensorboard': 'tensorboard/'
         }
+        'mpc': {
+            'H': 10
+        }
     }
 }
