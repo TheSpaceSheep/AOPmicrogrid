@@ -1,3 +1,4 @@
+
 class AbstractAgent():
     def __init__(self, params):
         self.params = params
@@ -6,6 +7,7 @@ class AbstractAgent():
         if self.params['env']['env'] == 'microgrid':
             import gym
             import microgridRLsimulator
+            from stable_baselines.common import make_vec_env
             self.env = gym.make("microgridRLsimulator-v0",
                                start_date = self.params['env']['tr_st_date'],
                                end_date = self.params['env']['tr_en_date'],
@@ -15,6 +17,9 @@ class AbstractAgent():
                                start_date = self.params['env']['te_st_date'],
                                end_date = self.params['env']['te_en_date'],
                                case = self.params['env']['case'])
+
+            self.env = make_vec_env(lambda :self.env, n_envs=1)
+            self.test_env = make_vec_env(lambda :self.test_env, n_envs=1)
 
         self.nb_timesteps = 0
 
@@ -43,9 +48,15 @@ class AbstractAgent():
                 obs, reward, dones, info = self.test_env.step(action)
 
 
-    def store_results(self, path="../plots/", id=None, render_tests=False):
-        if render_tests:
+    def store_results(self, path="plots/", id=None, render_tr_te=1):
+        """
+        :param: render_tr_te set to 0 to render nothing
+                                    1 to render test only
+                                    2 to render train only
+                                    3 to render test and train
+        """
+        if render_tr_te == 1 or render_tr_te == 3:
             self.test_env.render(path+"test/", id=id)
-        else:
+        if render_tr_te >= 2:
             self.env.render(path+"train/", id=id)
 
