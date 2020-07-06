@@ -1,3 +1,10 @@
 # ignore temporary vim files that end with ~ and swap files
 *~
 *.swp
+
+agents/__pycache__/
+aopmgenv/
+params/__pycache__/
+plots/
+results/
+tensorboard/
