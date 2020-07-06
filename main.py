@@ -1,10 +1,6 @@
 import argparse
 import copy
 import microgridRLsimulator
-from datetime import datetime
-
-now = datetime.now()
-dt_string = now.strftime("%d-%m-%Y_%H-%M-%S")
 
 import params.params as params
 from agents.random_agent import RandomAgent
@@ -25,7 +21,6 @@ agent = PPOAgent(params)
 
 agent.train()
 # agent.test()
-agent.store_results(path=f"results/{dt_string}/", id=agent.name,
-                    render_tr_te=2)
+agent.store_results(render_tr_te=2)
 print("End of agent's life")
 

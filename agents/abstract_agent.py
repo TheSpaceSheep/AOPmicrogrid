@@ -1,3 +1,4 @@
+import json
 
 class AbstractAgent():
     def __init__(self, params):
@@ -48,15 +49,28 @@ class AbstractAgent():
                 obs, reward, dones, info = self.test_env.step(action)
 
 
-    def store_results(self, path="plots/", id=None, render_tr_te=1):
+    def store_results(self, path=None, render_tr_te=2):
         """
         :param: render_tr_te set to 0 to render nothing
                                     1 to render test only
                                     2 to render train only
                                     3 to render test and train
         """
+        if path is None:
+            from datetime import datetime
+            now = datetime.now()
+            dt_string = now.strftime("%d-%m-%Y_%H-%M-%S")
+            path = f"results/{dt_string}_{self.name}/"
+
         if render_tr_te == 1 or render_tr_te == 3:
-            self.test_env.render(path+"test/", id=id)
+            self.test_env.render(path+"test/", id=self.name)
+            print(f'results plotted at {path+"test/"}')
+
         if render_tr_te >= 2:
-            self.env.render(path+"train/", id=id)
+            self.env.render(path+"train/", id=self.name)
+            print(f'results plotted at {path+"train/"}')
+
+        with open(path+"params.txt", 'w') as param_file:
+           param_file.write(json.dumps(self.params, indent=4))
+
 
