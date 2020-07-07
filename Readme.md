@@ -9,16 +9,10 @@ Run the `install.sh` file
 
 ``` ./install.sh ```
 
-Run a ppo agent on the continual maze environment using 
+Run a ppo agent on the microgrid environment using 
 
 ```
 source aopmgenv/bin/activate
-python test_ppo_maze.py
-```
-
-Or a random agent on the microgrid using
-
-```
-python main.py
+python main.py --agent ppo --env microgrid
 ```
 
